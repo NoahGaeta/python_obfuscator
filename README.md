@@ -27,7 +27,7 @@ optional arguments:
 ```
 
 ### **To Do:**
-[] Fork off of astunparse and tackle edge cases
-[] Allow for obfuscation with non-latin characters
-[] Add a setup.py file for pip package installation
-[] Do not obfuscate imports when targeting a file directly
+[ ] Fork off of astunparse and tackle edge cases
+[ ] Allow for obfuscation with non-latin characters
+[ ] Add a setup.py file for pip package installation
+[ ] Do not obfuscate imports when targeting a file directly
