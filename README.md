@@ -1,9 +1,9 @@
-#**python_obfuscator**
+# **python_obfuscator**
 
-##**Description:**
+## **Description:**
 A Simple Python Obfuscator
 
-##**Overview:**
+## **Overview:**
 ```
 usage: obfuscator_cmd.py [-h] --obfuscated_folder_path OBFUSCATED_FOLDER_PATH
                          [--directory DIRECTORY] [--file FILE]
@@ -26,7 +26,7 @@ optional arguments:
                         file but not both)
 ```
 
-##**TO DO:**
+## **TO DO:**
 1.) [] Fork off of astunparse and tackle edge cases
 2.) [] Allow for obfuscation with non-latin characters
 3.) [] Add a setup.py file for pip package installation
