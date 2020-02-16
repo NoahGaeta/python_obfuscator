@@ -29,3 +29,5 @@ optional arguments:
 - [ ] Add a setup.py file for pip package installation
 
 - [ ] Do not obfuscate imports when targeting a file directly
+
+- [ ] Allow to exclude files/directories for obfuscation
