@@ -7,11 +7,6 @@ A Simple Python Obfuscator
 ```
 usage: obfuscator_cmd.py [-h] --obfuscated_folder_path OBFUSCATED_FOLDER_PATH
                          [--directory DIRECTORY] [--file FILE]
-obfuscator_cmd.py: error: the following arguments are required: --obfuscated_folder_path
-
-(venv) C:\Users\Noah Gaeta\PycharmProjects\python_obfuscator>python obfuscator_cmd.py -h
-usage: obfuscator_cmd.py [-h] --obfuscated_folder_path OBFUSCATED_FOLDER_PATH
-                         [--directory DIRECTORY] [--file FILE]
 
 A python obfuscator that will obfuscate names using the ast library.
 
