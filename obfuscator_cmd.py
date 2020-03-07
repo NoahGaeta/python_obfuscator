@@ -1,5 +1,5 @@
 import argparse
-from file_handler import ObfuscationFileHandler
+from obfuscator_source.file_handler import ObfuscationFileHandler
 
 
 def main():

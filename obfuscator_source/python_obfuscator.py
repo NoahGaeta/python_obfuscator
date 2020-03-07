@@ -6,9 +6,10 @@ import builtins
 
 
 class Obfuscator(ast.NodeTransformer):
-    def __init__(self, previous_name_map={}):
+    def __init__(self, all_file_names=[], previous_name_map={}):
         self.name_map = previous_name_map
-        self.imports = []
+        self.all_file_names = all_file_names
+        self.non_obfuscated_names = []
 
     def run_obfuscator(self, source):
         tree = ast.parse(source)
@@ -18,14 +19,29 @@ class Obfuscator(ast.NodeTransformer):
 
     def visit_Import(self, node):
         for name in node.names:
-            self.imports.append(name.name)
+            if name.name not in self.all_file_names:
+                self.non_obfuscated_names.append(name.name)
+                if name.asname:
+                    self.non_obfuscated_names.append(name.asname)
         return node
 
     def visit_ImportFrom(self, node):
         self.generic_visit(node)
+        file_name = node.module.split('.')[-1] if node.module else None
+        if not file_name:
+            return node
         for name in node.names:
-            obf_name = self.__obfuscate_name(name, 'name')
-            name.name = obf_name
+            if file_name in self.all_file_names:
+                if name.name in self.all_file_names:
+                    self.all_file_names.remove(name.name)
+                attr = 'asname' if name.asname else 'name'
+                obf_name = self.__obfuscate_name(name, attr)
+                if obf_name:
+                    name.name = obf_name if not name.asname else name.name
+                    name.asname = obf_name if name.asname else name.asname
+            else:
+                self.non_obfuscated_names.append(name.name)
+                self.non_obfuscated_names.append(name.asname)
         return node
 
     def visit_Return(self, node):
@@ -59,13 +75,17 @@ class Obfuscator(ast.NodeTransformer):
 
     def visit_Attribute(self, node):
         self.generic_visit(node)
-        obf_name = self.__obfuscate_name(node, 'attr')
-        if obf_name:
-            return ast.Attribute(
-                attr=obf_name,
-                value=node.value,
-                ctx=node.ctx
-            )
+        if hasattr(node, 'value'):
+            if hasattr(node.value, 'id'):
+                parent_attr = node.value.id
+                if parent_attr and parent_attr not in self.non_obfuscated_names:
+                    obf_name = self.__obfuscate_name(node, 'attr')
+                    if obf_name:
+                        return ast.Attribute(
+                            attr=obf_name,
+                            value=node.value,
+                            ctx=node.ctx
+                        )
         return node
 
     # treat coroutines the same way
@@ -124,11 +144,26 @@ class Obfuscator(ast.NodeTransformer):
         """
         return ''.join(random.choice(string.ascii_letters) for _ in range(str_size))
 
+    def __check_if_obfuscatable(self, name):
+        return name in self.non_obfuscated_names or name in self.all_file_names
+
+    def __find_base_parent(self, node):
+        done = False
+        while not done:
+            if hasattr(node, 'value'):
+                print(node.__dict__.keys())
+                done = True
+
     def __obfuscate_name(self, node, attr):
         name = getattr(node, attr) if hasattr(node, attr) else None
+        if name == '__authenticate':
+            print(node.__dict__.keys())
         built_in = hasattr(builtins, name) if name else False
-        if not self.name_map.get(name) and not built_in and name not in self.imports:
+        if name == '__authenticate':
+            print(built_in)
+            print(self.__check_if_obfuscatable(name))
+        if not self.name_map.get(name) and not built_in and not self.__check_if_obfuscatable(name):
             self.name_map.update({name: self.__random_string_generator(15)})
-        if name and not built_in and name not in self.imports:
+        if name and not built_in and not self.__check_if_obfuscatable(name):
             return self.name_map.get(name)
         return None
