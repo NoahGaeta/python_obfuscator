@@ -147,21 +147,9 @@ class Obfuscator(ast.NodeTransformer):
     def __check_if_obfuscatable(self, name):
         return name in self.non_obfuscated_names or name in self.all_file_names
 
-    def __find_base_parent(self, node):
-        done = False
-        while not done:
-            if hasattr(node, 'value'):
-                print(node.__dict__.keys())
-                done = True
-
     def __obfuscate_name(self, node, attr):
         name = getattr(node, attr) if hasattr(node, attr) else None
-        if name == '__authenticate':
-            print(node.__dict__.keys())
         built_in = hasattr(builtins, name) if name else False
-        if name == '__authenticate':
-            print(built_in)
-            print(self.__check_if_obfuscatable(name))
         if not self.name_map.get(name) and not built_in and not self.__check_if_obfuscatable(name):
             self.name_map.update({name: self.__random_string_generator(15)})
         if name and not built_in and not self.__check_if_obfuscatable(name):

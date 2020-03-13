@@ -8,7 +8,7 @@ A Simple Python Obfuscator
 usage: obfuscator_cmd.py [-h] --obfuscated_folder_path OBFUSCATED_FOLDER_PATH
                          [--directory DIRECTORY] [--file FILE]
 
-A python obfuscator that will obfuscate names using the ast library.
+A python obfuscator that will obfuscate names using the ast library. 
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -22,7 +22,6 @@ optional arguments:
 ```
 
 ### **To Do:**
-- [ ] Fork off of astunparse and tackle edge cases
 
 - [ ] Allow for obfuscation with non-latin characters
 

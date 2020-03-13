@@ -50,15 +50,25 @@ class ObfuscationFileHandler:
         self.__write_obfuscated_source(obf_code, target_path)
 
     def __collect_all_files(self, target_path):
+        # Initialize list that will later contain file names to determine what modules are obfuscatable
         obfuscatable_list = []
+
+        # Iterate through directories
         for dir_path, dir_names, file_names in os.walk(target_path):
+            # obf_folder_path maintains the internal directory structure in the obfuscated folder
+            # path that was present within the non-obfuscated directory
             obf_folder_path = ntpath.join(self.obfuscated_folder_path, dir_path[len(target_path) + 1:])
+            # checks if directory exists, creates directory if not
             self.__verify_directory(obf_folder_path)
+            # Iterate through files
             for file_name in file_names:
+                # Initialize file object for current file
                 file_object = File(ntpath.join(dir_path, file_name), ntpath.join(obf_folder_path, file_name))
+                # Check if file is a python file, if it is append it the obfuscatable_list
                 if file_object.is_python_file():
                     obfuscatable_list.append(file_object)
                 else:
+                    # If the file isn't a valid python file, just copy it to the path with no obfuscation
                     file_object.copy_to_new_path()
         return obfuscatable_list
 
@@ -72,6 +82,5 @@ class ObfuscationFileHandler:
         return source_str
 
     def __write_obfuscated_source(self, obfuscated_code, target_path):
-        print(target_path)
         with open(target_path, 'w', encoding='utf-8') as obf_file:
             obf_file.write(obfuscated_code)
